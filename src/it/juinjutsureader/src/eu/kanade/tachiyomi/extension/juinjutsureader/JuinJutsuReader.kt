@@ -2,16 +2,14 @@ package eu.kanade.tachiyomi.extension.it.juinjutsureader
 
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.source.model.FilterList
+import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.online.ParsedHttpSource
-import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.util.asJsoup
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import okhttp3.OkHttpClient
+import java.util.Date
 import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.nodes.Document
@@ -45,7 +43,7 @@ class JuinJutsuReader : ParsedHttpSource() {
 
     override fun latestUpdatesRequest(page: Int) = GET("$baseUrl/latest/$page", headers)
 
-    //This page has no thumbnails
+    // This page has no thumbnails
     override fun latestUpdatesFromElement(element: Element) = SManga.create().apply {
         setUrlWithoutDomain(element.attr("href"))
         title = element.attr("title")
@@ -55,7 +53,7 @@ class JuinJutsuReader : ParsedHttpSource() {
 
     override fun searchMangaSelector() = popularMangaSelector()
 
-    //Following search related code was all taken from the GenkanOriginal class in Genkan.kt
+    // Following search related code was all taken from the GenkanOriginal class in Genkan.kt
     private var searchQuery = ""
     private var searchPage = 1
     private var nextPageSelectorElement = Elements()
@@ -112,7 +110,16 @@ class JuinJutsuReader : ParsedHttpSource() {
     override fun chapterFromElement(element: Element) = SChapter.create().apply {
         setUrlWithoutDomain(element.select("a").attr("href"))
         name = element.select("a").attr("title")
-        date_upload = dateFormat.parse(element.select(".meta_r").text()).time ?: 0
+        val dateAsText = element.select(".meta_r").text()
+        // Today
+        if (dateAsText == "Oggi") {
+            date_upload = Date().time
+        }
+        // yesterday
+        else if (dateAsText == "Ieri") {
+            date_upload = Date(System.currentTimeMillis() - 1000L * 60L * 60L * 24L).time
+        } else
+            date_upload = dateFormat.parse(element.select(".meta_r").text()).time ?: 0
     }
 
     companion object {
