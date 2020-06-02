@@ -1,7 +1,7 @@
 [![Travis](https://img.shields.io/travis/inorichi/tachiyomi-extensions.svg)](https://travis-ci.org/inorichi/tachiyomi-extensions)
 [![fdroid dev](https://img.shields.io/badge/stable-wiki-blue.svg)](https://github.com/inorichi/tachiyomi/wiki/FDroid-for-dev-versions)
 
-This rrepository contains removed extensions of tachiyomi. If one extension is missing, open an issue
+This repository contains removed extensions of tachiyomi. If one extension is missing, open an issue
 
 This repository contains the available extension catalogues for the [Tachiyomi](https://github.com/inorichi/tachiyomi) app.
 
